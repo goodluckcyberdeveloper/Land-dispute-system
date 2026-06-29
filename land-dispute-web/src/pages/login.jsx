@@ -1,12 +1,17 @@
 import { useState } from "react";
 import API from "../api/axios";
+import "./Login.css";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError("");
 
     try {
       const response = await API.post("users/login/", {
@@ -14,38 +19,57 @@ function Login() {
         password,
       });
 
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data));
 
       alert("Login successful!");
       window.location.href = "/dashboard";
 
-    } catch (error) {
-      alert("Login failed!");
-      console.log(error);
+    } catch (err) {
+      setError("Invalid email or password");
+      console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "auto" }}>
-      <h2>Login</h2>
+    <div className="login-container">
+      <div className="login-card">
 
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <br /><br />
+        <h2 className="title">Land Dispute System</h2>
+        <p className="subtitle">Stakeholder Login</p>
 
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br /><br />
+        {error && <p className="error">{error}</p>}
 
-        <button type="submit">Login</button>
-      </form>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Email address"
+            className="input"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            className="input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <button className="button" type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+
+          <div className="links">
+            <a href="/forgot-password">Forgot Password?</a>
+          </div>
+        </form>
+
+      </div>
     </div>
   );
 }

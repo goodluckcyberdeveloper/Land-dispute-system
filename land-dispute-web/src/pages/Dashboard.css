@@ -1,0 +1,23 @@
+.dashboard-wrapper {
+  display: flex;
+}
+
+.main-content {
+  margin-left: 240px;
+  padding: 20px;
+  width: 100%;
+  background: #f4f6f8;
+  min-height: 100vh;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.loading {
+  text-align: center;
+  margin-top: 50px;
+}

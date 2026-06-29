@@ -1,0 +1,50 @@
+.dispute-container {
+  padding: 20px;
+}
+
+h2 {
+  margin-bottom: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+.table th {
+  background: #1e293b;
+  color: white;
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  color: white;
+}
+
+.pending {
+  background: orange;
+}
+
+.in_progress {
+  background: blue;
+}
+
+.resolved {
+  background: green;
+}
+
+.loading {
+  text-align: center;
+  margin-top: 50px;
+}
