@@ -3,20 +3,25 @@ from django.db import models
 
 
 class User(AbstractUser):
-    full_name = models.CharField(max_length=255)
 
     ROLE_CHOICES = [
-        ('user', 'User'),
-        ('stakeholder', 'Stakeholder')
+        ('admin', 'Admin'),
+        ('leader', 'Leader'),
+        ('citizen', 'Citizen')
     ]
 
     full_name = models.CharField(max_length=255)
+
     email = models.EmailField(unique=True)
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
+
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default='citizen'
+    )
 
     def __str__(self):
         return self.username
-    
 class Street(models.Model):
     name = models.CharField(
         max_length=100,

@@ -24,19 +24,25 @@ def register_user(request):
 @api_view(['POST'])
 def login_user(request):
 
-    email = request.data['email']
-    password = request.data['password']
+    email = request.data.get('email')
+    password = request.data.get('password')
 
-    user = authenticate(username=email, password=password)
+    try:
+        user_obj = User.objects.get(email=email)
+    except User.DoesNotExist:
+        return Response({"message": "User not found"}, status=400)
 
-    if user:
+    user = authenticate(username=user_obj.username, password=password)
+
+    if user is not None:
         return Response({
             "message": "Login success",
             "user_id": user.id,
-            "role": user.role
+            "role": user.role,
+            "email": user.email
         })
 
-    return Response({"message": "Invalid credentials"})
+    return Response({"message": "Invalid credentials"}, status=400)
 
 @api_view(['POST'])
 def forgot_password(request):
