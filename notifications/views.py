@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Notification
+from notifications.models import Notification
 
 @api_view(['GET'])
 def get_notifications(request, user_id):

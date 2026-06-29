@@ -6,6 +6,7 @@ from .models import DisputeTracking
 from datetime import datetime, timedelta
 from .models import Escalation, Dispute
 from disputes.models import Evidence
+from notifications.models import Notification
 from users.models import StakeholderProfile
 from django.contrib.auth.models import User
 from .utils import can_solve
@@ -17,13 +18,32 @@ from .models import (
 @api_view(['POST'])
 def update_status(request):
 
+    dispute_id = request.data.get('dispute_id')
+    status = request.data.get('status')
+    message = request.data.get('message', '')
+    
+    if not dispute_id or not status:
+        return Response({"error": "Missing fields"}, status=400)
+    
+    dispute = Dispute.objects.filter(id=dispute_id).first()
+    if not dispute:
+        return Response({"error": "Dispute not found"}, status=404)
+    
+    dispute.status = status
+    dispute.save()
+
     DisputeTracking.objects.create(
-        dispute_id=request.data['dispute_id'],
-        status_update=request.data['status'],
-        message=request.data.get('message')
+        dispute=dispute,
+        status_update=status,
+        message=message
     )
     
-    return Response({"message": "Status updated"})
+    Notification.objects.create(
+        user=dispute.user,
+        message=f"Your dispute status changed to {status}"
+    )
+    
+    return Response({"message": "Status updated successfully"})
 # Create your views here.
 
 @api_view(['POST'])

@@ -44,7 +44,14 @@ class Dispute(models.Model):
     complainant_phone = models.CharField(
         max_length=20
     )
-
+    
+    respondent_name = models.CharField(max_length=255)
+    respondent_phone = models.CharField(
+       max_length=20,
+       blank=True,
+       null=True
+    )
+    
     location_lat = models.FloatField()
 
     location_lng = models.FloatField()

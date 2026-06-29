@@ -16,13 +16,17 @@ Including another URLconf
 """
 
 from django.contrib import admin
+from .views import home
+from locations.views import map_disputes
 from django.urls import path, include
 
 urlpatterns = [
+    path('', home),
     path('admin/', admin.site.urls),
-
     path('api/users/', include('users.urls')),
     path('api/disputes/', include('disputes.urls')),
     path('api/tracking/', include('tracking.urls')),
     path('api/notifications/', include('notifications.urls')),
+    path('api/map/', map_disputes),
 ]
+
