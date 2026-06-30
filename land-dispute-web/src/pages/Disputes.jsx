@@ -1,18 +1,31 @@
 import { useEffect, useState } from "react";
 import API from "../api/axios";
+import Sidebar from "../components/Sidebar";
 import "./Disputes.css";
 
 function Disputes() {
+  const [user, setUser] = useState(null);
   const [disputes, setDisputes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchDisputes();
+    const data = localStorage.getItem("user");
+
+    if (data) {
+      const currentUser = JSON.parse(data);
+      setUser(currentUser);
+      fetchDisputes(currentUser.user_id);
+    } else {
+      setLoading(false);
+    }
   }, []);
 
-  const fetchDisputes = async () => {
+  const fetchDisputes = async (userId) => {
     try {
-      const res = await API.get("disputes/");
+      const res = await API.get(
+        `disputes/user/${userId}/`
+      );
+
       setDisputes(res.data);
     } catch (error) {
       console.log(error);
@@ -21,45 +34,72 @@ function Disputes() {
     }
   };
 
-  if (loading) {
-    return <h3 className="loading">Loading cases...</h3>;
+  if (!user) {
+    return <h3 className="loading">Loading...</h3>;
   }
 
   return (
-    <div className="dispute-container">
+    <div className="dashboard-wrapper">
+      <Sidebar user={user} />
 
-      <h2>Land Dispute Cases</h2>
+      <div className="main-content">
+        <div className="dispute-container">
+          <h2>My Land Disputes</h2>
 
-      <table className="table">
+          {loading ? (
+            <h3 className="loading">Loading disputes...</h3>
+          ) : disputes.length === 0 ? (
+            <p>No disputes found.</p>
+          ) : (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Category</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Location</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
 
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Status</th>
-            <th>Location</th>
-            <th>Date</th>
-          </tr>
-        </thead>
+              <tbody>
+                {disputes.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.id}</td>
 
-        <tbody>
-          {disputes.map((item) => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
-              <td>{item.title}</td>
-              <td>
-                <span className={`status ${item.status}`}>
-                  {item.status}
-                </span>
-              </td>
-              <td>{item.location}</td>
-              <td>{item.created_at}</td>
-            </tr>
-          ))}
-        </tbody>
+                    <td>
+                      {item.category || "No Category"}
+                    </td>
 
-      </table>
+                    <td>{item.description}</td>
 
+                    <td>
+                      <span
+                        className={`status ${item.status}`}
+                      >
+                        {item.status}
+                      </span>
+                    </td>
+
+                    <td>
+                      {item.location_lat},
+                      {" "}
+                      {item.location_lng}
+                    </td>
+
+                    <td>
+                      {new Date(
+                        item.created_at
+                      ).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

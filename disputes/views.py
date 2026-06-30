@@ -86,3 +86,26 @@ def user_disputes(request, user_id):
         })
 
     return Response(data)
+
+
+@api_view(['GET'])
+def single_dispute(request, dispute_id):
+    try:
+        d = Dispute.objects.get(id=dispute_id)
+
+        return Response({
+            "id": d.id,
+            "category": d.category.name if d.category else None,
+            "description": d.description,
+            "status": d.status,
+            "lat": d.location_lat,
+            "lng": d.location_lng,
+            "complainant_name": d.complainant_name,
+            "respondent_name": d.respondent_name,
+            "complainant_phone": d.complainant_phone,
+            "respondent_phone": d.respondent_phone,
+            "created_at": d.created_at
+        })
+
+    except Dispute.DoesNotExist:
+        return Response({"error": "Not found"}, status=404)

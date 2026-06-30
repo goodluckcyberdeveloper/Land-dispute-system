@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import "leaflet/dist/leaflet.css";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Disputes from "./pages/Disputes";
-import CreateDispute from "./pages/CreateDispute";
+import MapView from "./pages/MapView";
+import DisputeDetails from "./pages/DisputeDetails";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -32,14 +33,9 @@ function App() {
           }
         />
 
-        <Route
-          path="/create-dispute"
-          element={
-            <ProtectedRoute>
-              <CreateDispute />
-            </ProtectedRoute>
-          }
-        />
+      <Route path="/map" element={<MapView />} />
+      <Route path="/dispute/:id" element={<DisputeDetails />} />
+      
 
       </Routes>
     </BrowserRouter>

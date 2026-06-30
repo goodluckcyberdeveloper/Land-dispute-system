@@ -1,30 +1,43 @@
 .sidebar {
   width: 230px;
   height: 100vh;
-  background: #0f172a;
-  color: white;
-  padding: 20px;
+  background: linear-gradient(180deg, #0f172a, #111827);
+  color: #e2e8f0;
+  padding: 20px 15px;
   position: fixed;
   left: 0;
   top: 0;
-  box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+  box-shadow: 2px 0 12px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s;
+  border-radius: 0 20px 20px 0;
 }
 
+/* CLOSED MODE */
+.sidebar.closed {
+  width: 70px;
+}
+
+/* LOGO */
 .logo {
   text-align: center;
-  margin-bottom: 20px;
   font-size: 20px;
   font-weight: bold;
   color: #38bdf8;
-}
-
-.role {
-  font-size: 13px;
+  cursor: pointer;
   margin-bottom: 20px;
-  color: #94a3b8;
-  text-align: center;
 }
 
+/* ROLE */
+.role {
+  font-size: 12px;
+  text-align: center;
+  color: #94a3b8;
+  margin-bottom: 15px;
+}
+
+/* MENU */
 .menu {
   list-style: none;
   padding: 0;
@@ -34,9 +47,9 @@
   padding: 12px;
   margin: 6px 0;
   cursor: pointer;
-  border-radius: 6px;
-  transition: 0.3s;
-  background: transparent;
+  border-radius: 8px;
+  transition: 0.2s;
+  font-size: 14px;
 }
 
 .menu li:hover {
@@ -44,6 +57,6 @@
   transform: translateX(5px);
 }
 
-.menu li:active {
-  background: #334155;
+.menu li:last-child {
+  color: #f87171;
 }

@@ -1,23 +1,195 @@
+
+/* =========================
+   GLOBAL DASHBOARD LAYOUT
+========================= */
+
 .dashboard-wrapper {
   display: flex;
+  min-height: 100vh;
+  background: #f4f6f8;
 }
 
+/* =========================
+   MAIN CONTENT AREA
+========================= */
+
 .main-content {
-  margin-left: 240px;
+  margin-left: 230px;
   padding: 20px;
-  width: 100%;
-  background: #f4f6f8;
-  min-height: 100vh;
+  width: calc(100% - 230px);
+  transition: all 0.3s ease;
 }
+
+/* When sidebar is closed */
+.sidebar.closed ~ .main-content {
+  margin-left: 70px;
+  width: calc(100% - 70px);
+}
+
+/* =========================
+   HEADER TITLE
+========================= */
+
+.main-content h1 {
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #1e293b;
+}
+
+/* =========================
+   LOADING TEXT
+========================= */
+
+.loading {
+  text-align: center;
+  margin-top: 50px;
+  font-size: 16px;
+  color: #64748b;
+}
+
+/* =========================
+   CARD (if used)
+========================= */
 
 .card {
   background: white;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+  margin-bottom: 20px;
 }
 
-.loading {
-  text-align: center;
-  margin-top: 50px;
+/* =========================
+   TABLE CONTAINER
+========================= */
+
+.table-container {
+  margin-top: 20px;
+  width: 100%;
+  overflow-x: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   TABLE STYLE
+========================= */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+.table th {
+  background: #1e293b;
+  color: white;
+  padding: 14px;
+  text-align: left;
+  font-size: 14px;
+}
+
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 14px;
+  color: #334155;
+}
+
+.table tr:hover {
+  background: #f1f5f9;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+button {
+  padding: 6px 10px;
+  border: none;
+  background: #3b82f6;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #2563eb;
+}
+
+/* =========================
+   INPUT FIELD
+========================= */
+
+input {
+  padding: 6px;
+  width: 120px;
+  border: 1px solid #cbd5e1;
+  border-radius: 5px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #3b82f6;
+}
+
+/* =========================
+   SELECT DROPDOWN
+========================= */
+
+select {
+  padding: 6px;
+  border-radius: 5px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+}
+
+/* =========================
+   STATUS BADGES
+========================= */
+
+.status {
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: white;
+  font-weight: bold;
+}
+
+.OPENING {
+  background: #f59e0b;
+}
+
+.PROGRESS {
+  background: #3b82f6;
+}
+
+.SCHEDULED {
+  background: #8b5cf6;
+}
+
+.SOLVED {
+  background: #22c55e;
+}
+
+.ESCALATED {
+  background: #ef4444;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 70px;
+    width: calc(100% - 70px);
+  }
+
+  .table {
+    min-width: 700px;
+  }
 }
