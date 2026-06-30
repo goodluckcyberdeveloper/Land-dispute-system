@@ -39,23 +39,6 @@ def submit_dispute(request):
 
     return Response({"message": "Dispute submitted successfully"})
     
-@api_view(['GET'])
-def user_disputes(request, user_id):
-
-    disputes = Dispute.objects.filter(user_id=user_id)
-
-    data = []
-
-    for d in disputes:
-        data.append({
-            "id": d.id,
-            "status": d.status,
-            "description": d.description,
-            "lat": d.location_lat,
-            "lng": d.location_lng
-        })
-
-    return Response(data)
 
 @api_view(['GET'])
 def map_disputes(request):

@@ -1,54 +1,66 @@
-function Sidebar({ user }) {
+import { useNavigate } from "react-router-dom";
+import "./Sidebar.css";
 
-  const goTo = (path) => {
-    window.location.href = path;
+function Sidebar({ user }) {
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem("user");
+    navigate("/");
   };
 
   return (
     <div className="sidebar">
-
       <h2 className="logo">LDS System</h2>
 
       <p className="role">Role: {user.role}</p>
 
       <ul className="menu">
-
-        <li onClick={() => goTo("/dashboard")}>
+        <li onClick={() => navigate("/dashboard")}>
           Dashboard
         </li>
 
-        <li onClick={() => goTo("/disputes")}>
+        <li onClick={() => navigate("/disputes")}>
           Dispute Cases
         </li>
 
-        <li onClick={() => goTo("/create-dispute")}>
+        <li onClick={() => navigate("/create-dispute")}>
           Create Dispute
         </li>
 
         {/* ADMIN ONLY */}
         {user.role === "admin" && (
           <>
-            <li>Manage Users</li>
-            <li>Reports</li>
+            <li onClick={() => navigate("/manage-users")}>
+              Manage Users
+            </li>
+
+            <li onClick={() => navigate("/reports")}>
+              Reports
+            </li>
           </>
         )}
 
         {/* LEADER ONLY */}
         {user.role === "leader" && (
           <>
-            <li>Assigned Cases</li>
-            <li>Update Status</li>
-            <li>Notifications</li>
+            <li onClick={() => navigate("/assigned-disputes")}>
+              Assigned Disputes
+            </li>
+
+            <li onClick={() => navigate("/update-status")}>
+              Update Status
+            </li>
+
+            <li onClick={() => navigate("/notifications")}>
+              Notifications
+            </li>
           </>
         )}
 
-        <li onClick={() => {
-          localStorage.removeItem("user");
-          window.location.href = "/";
-        }}>
+        <li onClick={logout}>
           Logout
         </li>
-
       </ul>
     </div>
   );
