@@ -4,6 +4,7 @@ import API from "../api/axios";
 import Sidebar from "../components/Sidebar";
 import "./Dashboard.css";
 import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
@@ -52,20 +53,21 @@ function Dashboard() {
 
   // 📄 EXPORT PDF
   const exportPDF = () => {
-    const doc = new jsPDF();
+  const doc = new jsPDF();
 
-    doc.text("Land Dispute Report", 10, 10);
+  doc.text("Land Dispute Report", 14, 10);
 
-    disputes.forEach((d, i) => {
-      doc.text(
-        `${i + 1}. ${d.description} - ${d.status}`,
-        10,
-        20 + i * 10
-      );
-    });
+  autoTable(doc, {
+    head: [["ID", "Description", "Status"]],
+    body: disputes.map(d => [
+      d.id,
+      d.description,
+      d.status
+    ]),
+  });
 
-    doc.save("report.pdf");
-  };
+  doc.save("report.pdf");
+};
 
   if (!user) return <h3>Loading...</h3>;
 

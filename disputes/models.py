@@ -55,7 +55,9 @@ class Dispute(models.Model):
     location_lat = models.FloatField()
 
     location_lng = models.FloatField()
-
+    
+    street_name = models.CharField(max_length=150, null=True, blank=True)
+    
     status = models.CharField(
         max_length=20,
         choices=STATUS_CHOICES,
@@ -132,7 +134,7 @@ class Evidence(models.Model):
     
 
 class Notification(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
     message = models.TextField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -142,3 +144,11 @@ class Notification(models.Model):
     on_delete=models.CASCADE,
     related_name="dispute_notifications"
     )
+    
+class Leader(models.Model):
+    full_name = models.CharField(max_length=100)
+    role = models.CharField(max_length=100)
+    phone = models.CharField(max_length=20)
+    email = models.EmailField()
+    village = models.CharField(max_length=100)
+    ward = models.CharField(max_length=100)

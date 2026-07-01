@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     # REST framework
     'rest_framework',
     'rest_framework_simplejwt',
+   
     
     # CORS
     'corsheaders',
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     'tracking',
     'notifications',
     'locations',
+    'django_extensions',
 ]
 
 # MIDDLEWARE
@@ -111,7 +113,7 @@ USE_I18N = True
 USE_TZ = True
 
 # STATIC FILES (RENDER)
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

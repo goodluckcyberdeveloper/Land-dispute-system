@@ -10,11 +10,8 @@ class DocumentSerializer(serializers.ModelSerializer):
 
 
 class DisputeSerializer(serializers.ModelSerializer):
-
-    documents = DocumentSerializer(
-        many=True,
-        read_only=True
-    )
+    documents = DocumentSerializer(many=True, read_only=True)
+    assigned_to = serializers.StringRelatedField()
 
     class Meta:
         model = Dispute

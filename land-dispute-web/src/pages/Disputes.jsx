@@ -22,9 +22,7 @@ function Disputes() {
 
   const fetchDisputes = async (userId) => {
     try {
-      const res = await API.get(
-        `disputes/user/${userId}/`
-      );
+      const res = await API.get(`disputes/user/${userId}/`);
 
       setDisputes(res.data);
     } catch (error) {

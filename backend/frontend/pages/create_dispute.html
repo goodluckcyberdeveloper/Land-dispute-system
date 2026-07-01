@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Dispute</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+
+        .container {
+            width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        input, textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: green;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: darkgreen;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Report Land Dispute</h2>
+
+    <form id="disputeForm">
+
+        <input type="text" id="street_name" placeholder="Street Name (optional)">
+
+        <textarea id="description" placeholder="Describe the dispute" required></textarea>
+
+        <input type="text" id="lat" placeholder="Latitude" required>
+
+        <input type="text" id="lng" placeholder="Longitude" required>
+
+        <button type="submit">Submit Dispute</button>
+
+    </form>
+
+    <p id="message"></p>
+</div>
+
+<script>
+document.getElementById("disputeForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const data = {
+        street_name: document.getElementById("street_name").value,
+        description: document.getElementById("description").value,
+        location_lat: document.getElementById("lat").value,
+        location_lng: document.getElementById("lng").value
+    };
+
+    fetch("http://127.0.0.1:8000/api/create-dispute/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.json())
+    .then(res => {
+        document.getElementById("message").innerText = "Dispute submitted successfully!";
+        document.getElementById("disputeForm").reset();
+    })
+    .catch(err => {
+        document.getElementById("message").innerText = "Error submitting dispute";
+        console.log(err);
+    });
+
+});
+</script>
+
+</body>
+</html>

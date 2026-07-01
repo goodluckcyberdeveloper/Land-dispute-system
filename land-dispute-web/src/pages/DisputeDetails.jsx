@@ -27,7 +27,7 @@ function DisputeDetails() {
 
   const fetchComments = async () => {
     try {
-      const res = await API.get(`comments/${id}/`);
+      const res = await API.get(`${id}/comments/`);
       setComments(res.data);
     } catch (error) {
       console.log(error);
@@ -36,7 +36,7 @@ function DisputeDetails() {
 
   const sendComment = async () => {
     try {
-      await API.post(`comments/${id}/`, { message });
+      await API.post(`${id}/comments/`, { message });
       setMessage("");
       fetchComments();
     } catch (error) {
@@ -77,7 +77,7 @@ function DisputeDetails() {
 
         {comments.map((c, i) => (
           <p key={i}>
-            <b>{c.stakeholder}:</b> {c.message}
+            <b>{c.user}:</b> {c.message}
           </p>
         ))}
 

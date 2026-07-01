@@ -13,9 +13,9 @@ function UpdateStatus() {
     e.preventDefault();
 
     try {
-      await API.put(`disputes/${disputeId}/status/`, {
-        status,
-      });
+      await API.put(`update-status/${disputeId}/`,
+      { status }
+    );
 
       alert("Status updated successfully.");
       setDisputeId("");

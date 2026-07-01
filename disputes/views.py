@@ -1,11 +1,14 @@
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Dispute
-from users.models import User
+
+from rest_framework import viewsets
+
 from .serializers import DisputeSerializer
+from users.models import User
+
 from django.contrib.auth import get_user_model
-from disputes.models import Dispute, DisputeCategory,Comment,Notification,Evidence
+from .models import Dispute, DisputeCategory,Comment,Notification,Evidence
 
 User = get_user_model()
 
@@ -67,26 +70,33 @@ def upload_evidence(request):
     return Response({"message": "Uploaded"})
 
 @api_view(['GET'])
-def user_disputes(request):
-    user = request.user
-    disputes = Dispute.objects.filter(user=user).order_by('-created_at')
+def user_disputes(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        disputes = Dispute.objects.filter(user=user).order_by("-created_at")
 
-    data = [
-        {
-            "id": d.id,
-            "category": d.category.name if d.category else None,
-            "description": d.description,
-            "status": d.status,
-            "lat": d.location_lat,
-            "lng": d.location_lng,
-            "created_at": d.created_at
-        }
-        for d in disputes
-    ]
+        data = [
+            {
+                "id": d.id,
+                "category": d.category.name if d.category else None,
+                "description": d.description,
+                "status": d.status,
+                "location_lat": d.location_lat,
+                "location_lng": d.location_lng,
+                "street_name": d.street_name,
+                "created_at": d.created_at,
+            }
+            for d in disputes
+        ]
 
-    return Response(data)
+        return Response(data)
 
-
+    except User.DoesNotExist:
+        return Response(
+            {"message": "User not found"},
+            status=404
+        )
+        
 @api_view(['GET'])
 def single_dispute(request, dispute_id):
     try:
@@ -102,6 +112,7 @@ def single_dispute(request, dispute_id):
             "respondent_phone": dispute.respondent_phone,
             "location_lat": dispute.location_lat,
             "location_lng": dispute.location_lng,
+            "street_name": dispute.street_name,
             "status": dispute.status,
             "created_at": dispute.created_at
         }
@@ -164,19 +175,34 @@ def comments(request, dispute_id):
 
         return Response({"message": "Comment added"})
 
+User = get_user_model()
+
 @api_view(['PUT'])
 def assign_leader(request, dispute_id):
     try:
         dispute = Dispute.objects.get(id=dispute_id)
 
         user_id = request.data.get("user_id")
-        dispute.assigned_to_id = user_id
+
+        if not user_id:
+            return Response({"error": "user_id required"}, status=400)
+
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=404)
+
+        dispute.assigned_to = user
         dispute.save()
 
-        return Response({"message": "Leader assigned"})
+        return Response({
+            "message": "Leader assigned successfully",
+            "dispute_id": dispute.id,
+            "assigned_to": user.username
+        })
 
     except Dispute.DoesNotExist:
-        return Response({"error": "Not found"}, status=404)
+        return Response({"error": "Dispute not found"}, status=404)
     
 @api_view(['GET'])
 def notifications(request):
@@ -192,3 +218,25 @@ def notifications(request):
         for n in data
     ])
     
+@api_view(['POST'])
+def create_dispute(request):
+
+    street_name = request.data.get("street_name")
+    description = request.data.get("description")
+    lat = request.data.get("location_lat")
+    lng = request.data.get("location_lng")
+
+    dispute = Dispute.objects.create(
+        user=request.user,
+        street_name=street_name,
+        description=description,
+        location_lat=lat,
+        location_lng=lng,
+        status="Pending"
+    )
+
+    return Response({"message": "Dispute created", "id": dispute.id})
+
+class DisputeViewSet(viewsets.ModelViewSet):
+    queryset = Dispute.objects.all()
+    serializer_class = DisputeSerializer
