@@ -8,6 +8,12 @@ class Notification(models.Model):
     message = models.TextField()
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    
+    user = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    related_name="notification_list"
+    )
 
     def __str__(self):
         return self.title

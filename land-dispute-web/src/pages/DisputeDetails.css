@@ -1,0 +1,53 @@
+.details-container {
+  max-width: 900px;
+  margin: 30px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.details-title {
+  color: #0f172a;
+  margin-bottom: 25px;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.detail-card {
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.detail-card p {
+  margin: 10px 0;
+}
+
+.section-title {
+  color: #2563eb;
+  margin-bottom: 15px;
+}
+
+.back-btn {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background: #2563eb;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: #1d4ed8;
+}
+
+.loading {
+  text-align: center;
+  margin-top: 100px;
+}

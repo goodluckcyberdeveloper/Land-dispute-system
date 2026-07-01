@@ -69,7 +69,16 @@ class Dispute(models.Model):
     last_updated = models.DateTimeField(
         auto_now=True
     )
+    
+    assigned_to = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="assigned_disputes"
+    )
 
+    
     def __str__(self):
         return f"Dispute {self.id}"
 
@@ -120,3 +129,16 @@ class Comment(models.Model):
 class Evidence(models.Model):
     dispute = models.ForeignKey(Dispute, on_delete=models.CASCADE)
     file = models.FileField(upload_to='evidence/')
+    
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    user = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    related_name="dispute_notifications"
+    )

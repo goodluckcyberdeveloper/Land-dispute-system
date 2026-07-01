@@ -3,10 +3,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Dispute
 from users.models import User
-from .models import Evidence
 from .serializers import DisputeSerializer
 from django.contrib.auth import get_user_model
-from disputes.models import Dispute, DisputeCategory
+from disputes.models import Dispute, DisputeCategory,Comment,Notification,Evidence
 
 User = get_user_model()
 
@@ -68,22 +67,22 @@ def upload_evidence(request):
     return Response({"message": "Uploaded"})
 
 @api_view(['GET'])
-def user_disputes(request, user_id):
+def user_disputes(request):
+    user = request.user
+    disputes = Dispute.objects.filter(user=user).order_by('-created_at')
 
-    disputes = Dispute.objects.filter(user_id=user_id)
-
-    data = []
-
-    for d in disputes:
-        data.append({
+    data = [
+        {
             "id": d.id,
             "category": d.category.name if d.category else None,
             "description": d.description,
             "status": d.status,
-            "location_lat": d.location_lat,
-            "location_lng": d.location_lng,
+            "lat": d.location_lat,
+            "lng": d.location_lng,
             "created_at": d.created_at
-        })
+        }
+        for d in disputes
+    ]
 
     return Response(data)
 
@@ -91,21 +90,105 @@ def user_disputes(request, user_id):
 @api_view(['GET'])
 def single_dispute(request, dispute_id):
     try:
-        d = Dispute.objects.get(id=dispute_id)
+        dispute = Dispute.objects.get(id=dispute_id)
 
+        data = {
+            "id": dispute.id,
+            "category": dispute.category.name if dispute.category else None,
+            "description": dispute.description,
+            "complainant_name": dispute.complainant_name,
+            "complainant_phone": dispute.complainant_phone,
+            "respondent_name": dispute.respondent_name,
+            "respondent_phone": dispute.respondent_phone,
+            "location_lat": dispute.location_lat,
+            "location_lng": dispute.location_lng,
+            "status": dispute.status,
+            "created_at": dispute.created_at
+        }
+
+        return Response(data)
+
+    except Dispute.DoesNotExist:
+        return Response(
+            {"message": "Dispute not found"},
+            status=404
+        )
+        
+@api_view(['PUT'])
+def update_status(request, dispute_id):
+    try:
+        dispute = Dispute.objects.get(id=dispute_id)
+        
+        old_status = dispute.status
+        new_status = request.data.get("status")
+        
+        dispute.status = request.data.get("status", dispute.status)
+        dispute.save()
+        
+        # CREATE NOTIFICATION
+        Notification.objects.create(
+             user=dispute.user,
+             message=f"Your dispute status changed from {old_status} to {new_status}"
+        )
+        
         return Response({
-            "id": d.id,
-            "category": d.category.name if d.category else None,
-            "description": d.description,
-            "status": d.status,
-            "lat": d.location_lat,
-            "lng": d.location_lng,
-            "complainant_name": d.complainant_name,
-            "respondent_name": d.respondent_name,
-            "complainant_phone": d.complainant_phone,
-            "respondent_phone": d.respondent_phone,
-            "created_at": d.created_at
+            "message": "Status updated successfully",
+            "status": dispute.status
         })
 
     except Dispute.DoesNotExist:
+        return Response({"error": "Dispute not found"}, status=404)
+
+@api_view(['GET', 'POST'])
+def comments(request, dispute_id):
+
+    if request.method == "GET":
+        data = Comment.objects.filter(dispute_id=dispute_id).order_by("-created_at")
+
+        return Response([
+            {
+                "id": c.id,
+                "user": c.stakeholder.username,
+                "message": c.message,
+                "created_at": c.created_at
+            }
+            for c in data
+        ])
+
+    if request.method == "POST":
+        Comment.objects.create(
+            dispute_id=dispute_id,
+            stakeholder=request.user,
+            message=request.data.get("message")
+        )
+
+        return Response({"message": "Comment added"})
+
+@api_view(['PUT'])
+def assign_leader(request, dispute_id):
+    try:
+        dispute = Dispute.objects.get(id=dispute_id)
+
+        user_id = request.data.get("user_id")
+        dispute.assigned_to_id = user_id
+        dispute.save()
+
+        return Response({"message": "Leader assigned"})
+
+    except Dispute.DoesNotExist:
         return Response({"error": "Not found"}, status=404)
+    
+@api_view(['GET'])
+def notifications(request):
+    data = Notification.objects.filter(user=request.user).order_by("-created_at")
+
+    return Response([
+        {
+            "id": n.id,
+            "message": n.message,
+            "is_read": n.is_read,
+            "created_at": n.created_at
+        }
+        for n in data
+    ])
+    

@@ -1,5 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  FaBars,
+  FaHome,
+  FaGavel,
+  FaUsers,
+  FaChartBar,
+  FaBell,
+  FaMapMarkedAlt,
+  FaUserCircle,
+  FaSignOutAlt,
+  FaTasks,
+} from "react-icons/fa";
 import "./Sidebar.css";
 
 function Sidebar({ user }) {
@@ -17,64 +29,78 @@ function Sidebar({ user }) {
 
   return (
     <div className={`sidebar ${open ? "open" : "closed"}`}>
+      {/* HEADER */}
+      <div className="sidebar-header">
+        <h2 className="logo">
+          {open ? "LDS System" : "LDS"}
+        </h2>
 
-      {/* TOP LOGO (CLICK TO TOGGLE) */}
-      <h2 className="logo" onClick={toggleSidebar}>
-        LDS System
-      </h2>
+        <button className="toggle-btn" onClick={toggleSidebar}>
+          <FaBars />
+        </button>
+      </div>
 
       {open && (
         <>
-          <p className="role">Role: {user.role}</p>
+          <div className="user-info">
+            <FaUserCircle className="profile-icon" />
+            <p>{user?.username}</p>
+            <small>Role: {user?.role}</small>
+          </div>
 
           <ul className="menu">
-
             <li onClick={() => navigate("/dashboard")}>
-              Dashboard
+              <FaHome /> Dashboard
             </li>
 
             <li onClick={() => navigate("/disputes")}>
-              Dispute Cases
+              <FaGavel /> Dispute Cases
+            </li>
+
+            <li onClick={() => navigate("/map")}>
+              <FaMapMarkedAlt /> Dispute Map
+            </li>
+
+            <li onClick={() => navigate("/notifications")}>
+              <FaBell /> Notifications
+            </li>
+
+            <li onClick={() => navigate("/profile")}>
+              <FaUserCircle /> Profile
             </li>
 
             {/* ADMIN ONLY */}
-            {user.role === "admin" && (
+            {user?.role === "admin" && (
               <>
                 <li onClick={() => navigate("/manage-users")}>
-                  Manage Users
+                  <FaUsers /> Manage Users
                 </li>
 
                 <li onClick={() => navigate("/reports")}>
-                  Reports
+                  <FaChartBar /> Reports
                 </li>
               </>
             )}
 
             {/* LEADER ONLY */}
-            {user.role === "leader" && (
+            {user?.role === "leader" && (
               <>
                 <li onClick={() => navigate("/assigned-disputes")}>
-                  Assigned Disputes
+                  <FaTasks /> Assigned Disputes
                 </li>
 
                 <li onClick={() => navigate("/update-status")}>
-                  Update Status
-                </li>
-
-                <li onClick={() => navigate("/notifications")}>
-                  Notifications
+                  <FaTasks /> Update Status
                 </li>
               </>
             )}
 
             <li onClick={logout}>
-              Logout
+              <FaSignOutAlt /> Logout
             </li>
-
           </ul>
         </>
       )}
-
     </div>
   );
 }
